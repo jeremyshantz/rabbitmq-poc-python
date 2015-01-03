@@ -3,9 +3,12 @@
 #
 
 import pika
+import json
 
 def callback(ch, method, properties, body):
     print " [x] Received %r" % (body,)
+    obj = json.load(body)
+    print " [x] Received %r" % (obj['test'])
 
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
