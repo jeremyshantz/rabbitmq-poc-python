@@ -7,11 +7,12 @@ import base64
 
 VERSION = '0.0.1'
 
-payload = '{"test": "hello, world"}'
-
 def buildmessage ():
-	data = base64.b64encode(payload)
-	return data
+	f = open('image.jpg', mode='rb')
+	bytes = base64.b64encode(bytearray(f.read()))
+	f.close()
+	payload = '{"test": "hello, world", "image": "' + bytes + '"}'
+	return payload
 
 
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
@@ -20,7 +21,7 @@ channel = connection.channel()
 channel.queue_declare(queue='hello')
 channel.basic_publish(exchange='', routing_key='hello', body=buildmessage())
 
-print " [x] Sent message"
+print(" [x] Sent message")
 
 connection.close()
 
